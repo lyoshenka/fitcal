@@ -7,16 +7,19 @@ class App < Scorched::Controller
     Erubis::Eruby.new(File.read(file)).result(params)
   end
 
-  def daysIn(MonthNum)
-    (Date.new(Time.now.year,12,31).to_date<<(12-MonthNum)).day
+  def cal(year, month)
+    eruby("cal.eruby", {
+        :month => month,
+        :year => year
+    })
   end
 
-  get '/' do
-    eruby("cal.eruby", {
-        :daysInMonth => daysIn(6),
-        :month => 'June',
-        :year => 2013
-    })
+  get '/' do |year, month|
+    cal(Date.today().year, Date.today().month)
+  end
+
+  get '/:year/:month' do |year, month|
+    cal(year[1].to_i(), month[1].to_i())
   end
 end
 run App
