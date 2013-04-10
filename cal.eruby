@@ -1,0 +1,6 @@
+<section id="calendar">
+  <h1><% month + ' ' + year %></h1>
+  <% for day in (1..daysInMonth) %>
+      <time datetime="<% year + '-' + month + '-' + day %>"><a href="#"><% day %></a></time>
+  <% end %>
+</section>
