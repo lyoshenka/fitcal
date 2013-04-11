@@ -22,16 +22,16 @@
 </head>
 
 <body>
+  <a href="{{ path('calendar', {'year': prevYear, 'month': prevMonth }) }}"><< Prev Month</a> | 
+  <a href="{{ path('calendar') }}">Today</a> | 
+  <a href="{{ path('calendar', {'year': nextYear, 'month': nextMonth }) }}">Next Month >></a>
   <section id="calendar">
-    <% date = Date.new(year,month,1) %>
-    <h1><%= date.strftime('%B %Y') %></h1>
-    <% date -= date.wday() # rewind till Sunday %>
-    <% until date.month() > month && date.wday() == 0 %>
-        <time datetime="<%= date.strftime('%Y-%m-%d') %>" class="<%= date.month() == month ? '' : 'notmonth' %>">
-          <a href="#"><%= date.day() %></a>
+    <h1>{{ startDate | date('F Y') }}</h1>
+    {% for date in dates %}
+        <time datetime="{{ date.long }}" class="{{ date.inMonth ? '' : 'notmonth' }}">
+          <a href="#">{{ date.day }}</a>
         </time>
-        <% date = date + 1 %>
-    <% end %>
+    {% endfor %}
   </section>
 </body>
 </html>
