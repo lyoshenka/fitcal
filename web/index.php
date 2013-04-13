@@ -6,22 +6,40 @@ if (php_sapi_name() === 'cli-server' && is_file($filename)) {
     return false;
 }
 
-require_once __DIR__.'/../vendor/autoload.php';
+require_once __DIR__.'/../app.php';
 
-class MyApp extends Silex\Application
-{
-    use Silex\Application\UrlGeneratorTrait;
-    use Silex\Application\TwigTrait;
-}
 
-$app = new MyApp();
-$app['debug'] = true;
+$app->get('/u/list', function() use ($app) {
+    $db = $app['mongo'];
+    $userCol = $db->selectCollection('users');
+    $users = $userCol->find();
+    return $app->render('user_list.twig', array(
+      'users' => iterator_to_array($users)
+    ));
+});
+$app->get('/u/new', function() use ($app) {
+    return $app->render('user_new.twig');
+});
+$app->post('/u/new', function() use ($app) {
+    $db = $app['mongo'];
+    $userCol = $db->selectCollection('users');
+    $name = $app['request']->get('name');
 
-$app->register(new Silex\Provider\TwigServiceProvider(), array(
-    'twig.path' => __DIR__.'/../views',
-));
-$app->register(new Silex\Provider\UrlGeneratorServiceProvider());
+    if ($userCol->count(array('name' => $name)))
+    {
+      return "User with name $name already exists.";
+    }
 
+    $userCol->insert(array('name' => $name));
+    return $app->redirect('/u/list');
+});
+
+
+$app->get('/w/{id}', function($id) use ($app) {
+    $db = $app['mongo'];
+    $workouts = $db->selectCollection('workouts')->find(array('name' => 'pop'));
+    return var_export($workouts, true);
+});
 
 $app->get('/{year}/{month}', function($year, $month) use ($app) {
     $date = new DateTime($year . '-' . $month . '-01');
@@ -49,7 +67,7 @@ $app->get('/{year}/{month}', function($year, $month) use ($app) {
         $date->modify('+1 day');
     }
 
-    return $app->render('cal.twig.html', array(
+    return $app->render('cal.twig', array(
         'startDate' => $startDate,
         'dates' => $dates,
         'prevYear' => $prevMonthDate->format('Y'),

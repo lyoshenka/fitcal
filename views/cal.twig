@@ -1,5 +1,6 @@
-<html>
-<head>
+{% extends "layout.twig" %}
+
+{% block head %}
   <style type="text/css">
     html, body {
     font-family: "Helvetica Nueu", Helvetica, Arial, sans-serif;
@@ -19,9 +20,9 @@
     time.notmonth { background: #777; }
     section#calendar { width: 970px; }
   </style>
-</head>
+{% endblock %}
 
-<body>
+{% block content %}
   <a href="{{ path('calendar', {'year': prevYear, 'month': prevMonth }) }}"><< Prev Month</a> | 
   <a href="{{ path('calendar') }}">Today</a> | 
   <a href="{{ path('calendar', {'year': nextYear, 'month': nextMonth }) }}">Next Month >></a>
@@ -33,5 +34,4 @@
         </time>
     {% endfor %}
   </section>
-</body>
-</html>
+{% endblock %}
