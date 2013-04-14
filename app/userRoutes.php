@@ -2,7 +2,7 @@
 
 $userRoutes = $app['controllers_factory'];
 
-$userRoutes->get('/list', function() use ($app) {
+$userRoutes->get('/', function() use ($app) {
     $db = $app['mongo'];
     $userCol = $db->selectCollection('users');
     $users = $userCol->find();
@@ -16,18 +16,33 @@ $userRoutes->get('/new', function() use ($app) {
 });
 
 $userRoutes->post('/new', function() use ($app) {
-    $db = $app['mongo'];
-    $userCol = $db->selectCollection('users');
-    $name = $app['request']->get('name');
+  $db = $app['mongo'];
+  $userCol = $db->selectCollection('users');
+  $name = $app['request']->get('name');
 
-    if ($userCol->count(array('name' => $name)))
-    {
-      return "User with name $name already exists.";
-    }
+  if ($userCol->count(array('name' => $name)))
+  {
+    return "User with name $name already exists.";
+  }
 
-    $userCol->insert(array('name' => $name));
-    return $app->redirect($app->path('user_list'));
+  $userCol->insert(array('name' => $name));
+  return $app->redirect($app->path('user_list'));
 });
 
+$userRoutes->get('/{id}', function() use ($app) {
+  $db = $app['mongo'];
+  $user = $db->selectCollection('users')->findOne(array(
+    '_id' => new MongoId($app['request']->get('id'))
+  ));
+
+  if (!$user)
+  {
+    return 'User not found';
+  }
+
+  return $app->render('user_show.twig', array(
+    'user' => $user
+  ));
+})->bind('user_show');
 
 return $userRoutes;

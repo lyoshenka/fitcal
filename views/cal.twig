@@ -2,6 +2,7 @@
 
 {% block head %}
   <style type="text/css">
+{#
     html, body {
     font-family: "Helvetica Nueu", Helvetica, Arial, sans-serif;
     }
@@ -19,6 +20,8 @@
     }
     time.notmonth { background: #777; }
     section#calendar { width: 970px; }
+#}
+  time {display: block;}
   </style>
 {% endblock %}
 
@@ -31,6 +34,9 @@
     {% for date in dates %}
         <time datetime="{{ date.long }}" class="{{ date.inMonth ? '' : 'notmonth' }}">
           <a href="#">{{ date.day }}</a>
+          {% for workout in date.workouts %}
+            {{ workout.description }}
+          {% endfor %}
         </time>
     {% endfor %}
   </section>

@@ -3,7 +3,7 @@
 {% block content %}
   {% for user in users %}
     <div class="user">
-      {{ user.name }}
+      <a href="{{ app.path('user_show', {id: user._id}) }}">{{ user.name }}</a>
     </div>
   {% endfor %}
 {% endblock %}
