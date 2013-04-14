@@ -6,33 +6,8 @@ if (php_sapi_name() === 'cli-server' && is_file($filename)) {
     return false;
 }
 
-require_once __DIR__.'/../app.php';
+require_once __DIR__.'/../app/app.php';
 
-
-$app->get('/u/list', function() use ($app) {
-    $db = $app['mongo'];
-    $userCol = $db->selectCollection('users');
-    $users = $userCol->find();
-    return $app->render('user_list.twig', array(
-      'users' => iterator_to_array($users)
-    ));
-});
-$app->get('/u/new', function() use ($app) {
-    return $app->render('user_new.twig');
-});
-$app->post('/u/new', function() use ($app) {
-    $db = $app['mongo'];
-    $userCol = $db->selectCollection('users');
-    $name = $app['request']->get('name');
-
-    if ($userCol->count(array('name' => $name)))
-    {
-      return "User with name $name already exists.";
-    }
-
-    $userCol->insert(array('name' => $name));
-    return $app->redirect('/u/list');
-});
 
 
 $app->get('/w/{id}', function($id) use ($app) {
@@ -77,6 +52,7 @@ $app->get('/{year}/{month}', function($year, $month) use ($app) {
     ));
 })
 ->bind('calendar')
+->assert('year', '\d+')->assert('month', '\d+')
 ->value('year', date('Y'))->value('month',date('m'));
 
 $app->run();

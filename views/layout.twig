@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" type="text/css" href="/css/chosen.css">
     {% block head %}
     {% endblock %}
   </head>
@@ -13,5 +14,9 @@
       {% block footer %}
       {% endblock %}
     </div>
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="/js/chosen.jquery.min.js"></script>
+    {% block script %}
+    {% endblock %}
   </body>
 </html>

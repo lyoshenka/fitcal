@@ -1,21 +1,21 @@
 <?php
 
-require_once __DIR__.'/vendor/autoload.php';
+require_once __DIR__.'/../vendor/autoload.php';
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class MyApp extends Silex\Application
 {
-    use Silex\Application\UrlGeneratorTrait;
-    use Silex\Application\TwigTrait;
+  use Silex\Application\UrlGeneratorTrait;
+  use Silex\Application\TwigTrait;
 }
 
 $app = new MyApp();
 $app['debug'] = true;
 
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
-    'twig.path' => __DIR__.'/views',
+  'twig.path' => __DIR__.'/../views',
 ));
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 // $app->register(new Silex\Provider\SymfonyBridgesServiceProvider(), array(
@@ -26,6 +26,9 @@ $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 // ));
 
 $app['mongo'] = $app->share(function() {
-    $m = new MongoClient();
-    return $m->selectDB('fitcal');
+  $m = new MongoClient();
+  return $m->selectDB('fitcal');
 });
+
+$app->mount('/u', include 'userRoutes.php');
+$app->mount('/w', include 'workoutRoutes.php');

@@ -23,8 +23,8 @@
 {% endblock %}
 
 {% block content %}
-  <a href="{{ path('calendar', {'year': prevYear, 'month': prevMonth }) }}"><< Prev Month</a> | 
-  <a href="{{ path('calendar') }}">Today</a> | 
+  <a href="{{ path('calendar', {'year': prevYear, 'month': prevMonth }) }}"><< Prev Month</a> |
+  <a href="{{ path('calendar') }}">Today</a> |
   <a href="{{ path('calendar', {'year': nextYear, 'month': nextMonth }) }}">Next Month >></a>
   <section id="calendar">
     <h1>{{ startDate | date('F Y') }}</h1>

@@ -1,0 +1,23 @@
+{% extends "layout.twig" %}
+
+{% block content %}
+  <form method="POST" action="">
+    <label>When</label>
+    <input type="text" name="name" value="{{ date | date('Y-m-d') }}"/>
+    <label>Who</label>
+    <select name="users" multiple id="user_select">
+      {% for user in users %}
+        <option value="{{ user._id }}">{{ user.name }}</option>
+      {% endfor %}
+    </select>
+    <label>What</label>
+    <input type="textarea" name="description" />
+    <input type="submit" />
+  </form>
+{% endblock %}
+
+{% block script %}
+  <script type="text/javascript">
+    $('#user_select').chosen();
+  </script>
+{% endblock %}
