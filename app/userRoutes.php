@@ -40,8 +40,21 @@ $userRoutes->get('/{id}', function() use ($app) {
     return 'User not found';
   }
 
+  $workouts = $db->selectCollection('workouts')->find(array(
+    'users' => $user['_id']
+  ));
+  $workouts = iterator_to_array($workouts);
+
+  foreach($workouts as &$workout)
+  {
+    $workout['users'] = $db->selectCollection('users')->find(array(
+      '_id' => array('$in' => $workout['users'])
+    ));
+  }
+
   return $app->render('user_show.twig', array(
-    'user' => $user
+    'user' => $user,
+    'workouts' => $workouts
   ));
 })->bind('user_show');
 

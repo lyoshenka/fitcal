@@ -9,6 +9,28 @@ class MyApp extends Silex\Application
 {
   use Silex\Application\UrlGeneratorTrait;
   use Silex\Application\TwigTrait;
+
+  public function pluck($arr, $key)
+  {
+    $values = array();
+    foreach ($arr as $index => $item)
+    {
+      if (array_key_exists($key,$item))
+      {
+        $result[] = $item[$key];
+      }
+    }
+    return $result;
+  }
+
+  public function setFlash($type, $short, $ext='')
+  {
+    $this['session']->set('flash', array(
+      'type'  => $type,
+      'short' => $short,
+      'ext'   => $ext,
+    ));
+  }
 }
 
 $app = new MyApp();
@@ -18,12 +40,12 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
   'twig.path' => __DIR__.'/../views',
 ));
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
+$app->register(new Silex\Provider\SessionServiceProvider());
 // $app->register(new Silex\Provider\SymfonyBridgesServiceProvider(), array(
 //   'symfony_bridges.class_path'  => __DIR__.'/vendor/symfony/src',
 // ));
-// $app->register(new Silex\Provider\SessionServiceProvider(), array(
-//   'session.storage.save_path' => __DIR__.'/tmp'
-// ));
+
+$app['twig']->addFilter(new Twig_SimpleFilter('pluck', array($app, 'pluck')));
 
 $app['mongo'] = $app->share(function() {
   $m = new MongoClient();
@@ -32,6 +54,17 @@ $app['mongo'] = $app->share(function() {
 
 $app->mount('/u', include 'userRoutes.php');
 $app->mount('/w', include 'workoutRoutes.php');
+
+// Symfony-style flashes (http://beryllium.ca/?p=541)
+$app->before( function() use ($app) {
+  $flash = $app[ 'session' ]->get('flash');
+  $app[ 'session' ]->set('flash', null);
+
+  if ($flash)
+  {
+    $app[ 'twig' ]->addGlobal('flash', $flash);
+  }
+});
 
 
 $app->get('/w/{id}', function($id) use ($app) {

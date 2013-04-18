@@ -7,6 +7,15 @@
   </head>
   <body>
     <div id="content">
+      {% block flash %}
+        {% if flash is defined %}
+          <div class="alert-message {{ flash.type }}">
+            <div class="container">
+              <p><strong>{{ flash.short }}</strong> {{ flash.ext }}</p>
+            </div>
+          </div>
+        {% endif %}
+      {% endblock flash %}
       {% block content %}
       {% endblock %}
     </div>

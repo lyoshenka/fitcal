@@ -26,14 +26,14 @@
 {% endblock %}
 
 {% block content %}
-  <a href="{{ path('calendar', {'year': prevYear, 'month': prevMonth }) }}"><< Prev Month</a> |
+  <a href="{{ path('calendar', {'year': prevYear, 'month': prevMonth }) }}">&#8810; Prev Month</a> |
   <a href="{{ path('calendar') }}">Today</a> |
-  <a href="{{ path('calendar', {'year': nextYear, 'month': nextMonth }) }}">Next Month >></a>
+  <a href="{{ path('calendar', {'year': nextYear, 'month': nextMonth }) }}">Next Month &#8811;</a>
   <section id="calendar">
     <h1>{{ startDate | date('F Y') }}</h1>
     {% for date in dates %}
         <time datetime="{{ date.long }}" class="{{ date.inMonth ? '' : 'notmonth' }}">
-          <a href="#">{{ date.day }}</a>
+          <a href="{{ app.path('workout_show', {date: date.long}) }}">{{ date.day }}</a>
           {% for workout in date.workouts %}
             {{ workout.description }}
           {% endfor %}
